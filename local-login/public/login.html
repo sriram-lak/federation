@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Local Login OIDC IdP</title>
+    <style>
+      :root {
+        font-family: "Segoe UI", sans-serif;
+        color: #10231b;
+        background: linear-gradient(160deg, #eef7f1, #d9ebe0);
+      }
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; }
+      form {
+        width: min(420px, 92vw);
+        background: #fff;
+        border: 1px solid #c5d8cc;
+        border-radius: 16px;
+        padding: 1.5rem;
+        display: grid;
+        gap: 0.85rem;
+      }
+      h1 { margin: 0; font-size: 1.35rem; }
+      p { margin: 0; color: #4d6659; font-size: 0.92rem; }
+      label { display: grid; gap: 0.3rem; font-size: 0.9rem; }
+      input { padding: 0.7rem 0.8rem; border-radius: 10px; border: 1px solid #b7cfc2; }
+      button {
+        border: 0; border-radius: 10px; background: #1f8a5b; color: #fff;
+        font-weight: 650; padding: 0.8rem 1rem; cursor: pointer;
+      }
+      .error { color: #b42318; background: #fee4e2; border-radius: 8px; padding: 0.55rem 0.7rem; }
+      .hint { font-size: 0.8rem; color: #678074; }
+    </style>
+  </head>
+  <body>
+    <form method="POST" action="/login">
+      <h1>Local Login (OIDC IdP)</h1>
+      <p>Entra federates here for password verification against local DB.</p>
+      <div id="error" class="error" hidden></div>
+      <label>Username <input name="username" required autocomplete="username" /></label>
+      <label>Password <input name="password" type="password" required autocomplete="current-password" /></label>
+      <input type="hidden" name="client_id" id="client_id" />
+      <input type="hidden" name="redirect_uri" id="redirect_uri" />
+      <input type="hidden" name="response_type" id="response_type" />
+      <input type="hidden" name="scope" id="scope" />
+      <input type="hidden" name="state" id="state" />
+      <input type="hidden" name="nonce" id="nonce" />
+      <button type="submit">Authenticate</button>
+      <p class="hint">Demo users: alice / bob — password Password123!</p>
+    </form>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      ["client_id","redirect_uri","response_type","scope","state","nonce"].forEach((key) => {
+        const el = document.getElementById(key);
+        if (el) el.value = params.get(key) || (key === "response_type" ? "code" : key === "scope" ? "openid profile email" : "");
+      });
+      const error = params.get("error");
+      if (error) {
+        const box = document.getElementById("error");
+        box.hidden = false;
+        box.textContent = error;
+      }
+    </script>
+  </body>
+</html>
