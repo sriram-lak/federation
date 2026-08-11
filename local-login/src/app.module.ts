@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { HealthController } from './health.controller';
 import { OidcModule } from './oidc/oidc.module';
 import { LocalUser } from './users/local-user.entity';
 import { UsersModule } from './users/users.module';
@@ -24,5 +25,6 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     OidcModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}
